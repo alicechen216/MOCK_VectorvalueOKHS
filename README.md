@@ -17,11 +17,11 @@ This repository implements the **MOCK (Multivariate Occupation Kernel)** algorit
 ```math
 \dot{x} = -y, \quad \dot{y} = x
 
-###🌪️ 2. Lorenz System (2D Projection)
+### 🌪️ 2. Lorenz System (2D Projection)
 
 \dot{x} = \sigma(y - x), \quad \dot{y} = x(\rho - z) - y
 
-###🔂 3. Van der Pol Oscillator
+### 🔂 3. Van der Pol Oscillator
 
 \dot{x} = y, \quad \dot{y} = \mu(1 - x^2)y - x
 
