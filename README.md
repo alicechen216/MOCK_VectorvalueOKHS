@@ -15,7 +15,7 @@ This repository implements the **MOCK (Multivariate Occupation Kernel)** algorit
 ### 🔁 1. Rotation Dynamics
 - dx/dt = -y  
 - dy/dt = x
-
+![Rotation Dynamics](1_1.png)
 ### 🌪️ 2. Lorenz System (2D Projection)
 - dx/dt = sigma * (y - x)  
 - dy/dt = x * (rho - z) - y
