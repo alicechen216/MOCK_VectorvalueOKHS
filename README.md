@@ -43,4 +43,4 @@ Each demo is independent. Simply open MATLAB and run one of them
 
 MIT License © Alice Chen
 
-Let me know if you want a version with embedded figures or GitHub Actions integration!
+
