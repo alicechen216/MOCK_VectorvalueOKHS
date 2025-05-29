@@ -29,15 +29,6 @@ This repository implements the **MOCK (Multivariate Occupation Kernel)** algorit
 - dx/dt = -y + 0.1 * x * (1 - x^2 - y^2)  
 - dy/dt =  x + 0.1 * y * (1 - x^2 - y^2)
 
-## 📂 Project Structure
-mock-dynamics/
-├── mock.m
-├── helpers/
-│   ├── solve_alpha_rbf.m
-│   ├── get_segments.m
-│   ├── rbf_kernel.m
-│   └── generate_vector_field.m
-└── README.md
 
 ## 🚀 How to Run
 
