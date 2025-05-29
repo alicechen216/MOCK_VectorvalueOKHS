@@ -1,4 +1,3 @@
-
 # 🌀 MOCK Dynamics Learning in MATLAB
 
 This repository implements the **MOCK (Multivariate Occupation Kernel)** algorithm for learning continuous vector fields from trajectory data using MATLAB. The implementation demonstrates the method on several well-known dynamical systems.
@@ -14,23 +13,22 @@ This repository implements the **MOCK (Multivariate Occupation Kernel)** algorit
 ## 📈 Included Dynamical Systems
 
 ### 🔁 1. Rotation Dynamics
-```math
-\dot{x} = -y, \quad \dot{y} = x
+- dx/dt = -y  
+- dy/dt = x
 
 ### 🌪️ 2. Lorenz System (2D Projection)
-
-\dot{x} = \sigma(y - x), \quad \dot{y} = x(\rho - z) - y
+- dx/dt = sigma * (y - x)  
+- dy/dt = x * (rho - z) - y
 
 ### 🔂 3. Van der Pol Oscillator
+- dx/dt = y  
+- dy/dt = mu * (1 - x^2) * y - x
 
-\dot{x} = y, \quad \dot{y} = \mu(1 - x^2)y - x
+### 🔄 4. Rotational + Radial Limit Cycle Dynamics
+- dx/dt = -y + 0.1 * x * (1 - x^2 - y^2)  
+- dy/dt =  x + 0.1 * y * (1 - x^2 - y^2)
 
-###🔄 4. Rotational + Radial Limit Cycle Dynamics
-
-\dot{x} = -y + 0.1x(1 - x^2 - y^2), \quad \dot{y} = x + 0.1y(1 - x^2 - y^2)
-
-##📂 Project Structure
-
+## 📂 Project Structure
 mock-dynamics/
 ├── mock.m
 ├── helpers/
@@ -40,16 +38,16 @@ mock-dynamics/
 │   └── generate_vector_field.m
 └── README.md
 
-##🚀 How to Run
+## 🚀 How to Run
 
 Each demo is independent. Simply open MATLAB and run one of them
 
 
-##📦 Requirements
+## 📦 Requirements
 	•	MATLAB R2020 or later
 	•	No external toolboxes required
 
-##📜 License
+## 📜 License
 
 MIT License © Alice Chen
 
