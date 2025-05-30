@@ -1,33 +1,50 @@
-clc;clear;close all;
-%%
-%dynamics: Rotational + radial limit cycle-like behavior
-N = 100;
-d=2;
+clc; clear; close all;
+
+%% Parameters
+n = 10;     % number of trajectories
+m = 10;     % segments per trajectory
+d = 2;
+dt = 0.05;  % time step per segment
+N = n * m;  % total training segments
+
+z0 = zeros(N, d);
+z1 = zeros(N, d);
 t0 = zeros(N,1);
-t1 = ones(N,1) * 0.1;
-theta = linspace(0, 2*pi, N+1); theta(end) = [];
-r = 1.0;
-z0 = [r * cos(theta)', r * sin(theta)'];
+t1 = zeros(N,1);
 
-% Parameters
-delta_t = t1(1) - t0(1);
-z1 = zeros(size(z0));
+% Define dynamics
+f_dyn = @(x, y) [-y + 0.1*x*(1 - x^2 - y^2); ...
+                  x + 0.1*y*(1 - x^2 - y^2)];
 
-for i = 1:N
-    x = z0(i,1); y = z0(i,2);
-    dx = -y + 0.1*x*(1 - x^2 - y^2);
-    dy =  x + 0.1*y*(1 - x^2 - y^2);
-    z1(i, :) = [x + dx * delta_t, y + dy * delta_t];
+%% Generate multiple trajectories and extract segments
+count = 1;
+for i = 1:n
+    theta0 = 2 * pi * rand();
+    r = 1.0 + 0.2 * randn();  % small perturbation
+    x0 = [r * cos(theta0), r * sin(theta0)];
+    traj = zeros(m+1, d);
+    traj(1,:) = x0;
+
+    for j = 1:m
+        x = traj(j,1); y = traj(j,2);
+        dxdy = f_dyn(x, y);
+        traj(j+1,:) = traj(j,:) + dt * dxdy';
+
+        z0(count,:) = traj(j,:);
+        z1(count,:) = traj(j+1,:);
+        t0(count) = (j-1)*dt;
+        t1(count) = j*dt;
+        count = count + 1;
+    end
 end
 
 delta = z1 - z0;
 
-%%
-% Hyperparameters
+%% Hyperparameters
 lambda = 1e-3;
 sigma = 0.5;
 
-% Precompute M
+% Precompute kernel matrix M
 M = zeros(N,N);
 for i = 1:N
     for j = 1:N
@@ -39,68 +56,53 @@ for i = 1:N
         );
     end
 end
-%%
+
+%% Solve for alpha
 alpha = zeros(N, d);
 for dim = 1:d
     rhs = delta(:, dim);
-    alpha(:, dim) = (M + lambda * N * eye(N)) \ rhs;
+    alpha(:, dim) = (M + lambda * eye(N)) \ rhs;
 end
-%%
-% Initial condition (new test point)
-y0 = [0.5, 0.5];  % test point in 2D
 
-% Time settings
-dt = 0.01;
-T = 1.0;
-steps = round(T / dt);
+%% Predict new trajectory using MOCK
+y0 = [0.5, 0.5];
+dt_pred = 0.01;
+T_pred = 5.0;
+steps = round(T_pred / dt_pred);
 y = zeros(steps+1, d);
 y(1,:) = y0;
 
-% Forward integration (Euler method)
 for k = 1:steps
-    v = zeros(1, d);  % velocity vector from learned vector field
-
+    v = zeros(1, d);
     for i = 1:N
-        weight = (t1(i)-t0(i))/2 * ( ...
+        w = (t1(i) - t0(i))/2 * ( ...
             gaussian_kernel(y(k,:), z0(i,:), sigma) + ...
-            gaussian_kernel(y(k,:), z1(i,:), sigma) ...
-        );
-        v = v + weight * alpha(i, :);
+            gaussian_kernel(y(k,:), z1(i,:), sigma));
+        v = v + w * alpha(i,:);
     end
-
-    y(k+1,:) = y(k,:) + dt * v;
+    y(k+1,:) = y(k,:) + dt_pred * v;
 end
-%%
-% Simulate ground truth trajectory using same initial condition
+
+%% Ground truth trajectory for validation
 yt = zeros(steps+1, d);
 yt(1,:) = y0;
-
 for k = 1:steps
-    x = yt(k,1);
-    y_ = yt(k,2);
-    dx = -y_ + 0.1*x*(1 - x^2 - y_^2);
-    dy =  x  + 0.1*y_*(1 - x^2 - y_^2);
-    yt(k+1,:) = yt(k,:) + dt * [dx, dy];
+    dxdy = f_dyn(yt(k,1), yt(k,2));
+    yt(k+1,:) = yt(k,:) + dt_pred * dxdy';
 end
 
-% Plot predicted vs ground truth
+%% Plot
 figure; hold on;
-
-% MOCK predicted trajectory
 plot(y(:,1), y(:,2), 'r-', 'LineWidth', 2);
-
-% Ground truth trajectory
 plot(yt(:,1), yt(:,2), 'b--', 'LineWidth', 2);
-
-% Training data
 scatter(z0(:,1), z0(:,2), 'ko', 'filled');
 scatter(z1(:,1), z1(:,2), 'gx');
 plot([z0(:,1) z1(:,1)]', [z0(:,2) z1(:,2)]', 'k--');
-
 legend('MOCK Predicted', 'Ground Truth', 'Train Start', 'Train End');
-title('MOCK Inference vs Ground Truth Trajectory');
+title('MOCK on Rotational + Radial Dynamics');
 axis equal; grid on;
-%%
+
+%% Gaussian Kernel
 function val = gaussian_kernel(x, y, sigma)
     val = exp(-norm(x - y)^2 / (2 * sigma^2));
 end
