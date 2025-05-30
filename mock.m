@@ -1,5 +1,5 @@
 clc; clear; close all;
-
+% Classical rotational dynamics: dx/dt = -y, dy/dt = x
 %% Parameters
 n = 10;         % number of trajectories
 m = 10;         % segments per trajectory
