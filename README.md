@@ -24,11 +24,12 @@ This repository implements the **MOCK (Multivariate Occupation Kernel)** algorit
 ### 🔂 3. Van der Pol Oscillator
 - dx/dt = y  
 - dy/dt = mu * (1 - x^2) * y - x
+![Van der Pol](1_3.png)
 
 ### 🔄 4. Rotational + Radial Limit Cycle Dynamics
 - dx/dt = -y + 0.1 * x * (1 - x^2 - y^2)  
 - dy/dt =  x + 0.1 * y * (1 - x^2 - y^2)
-
+![Rotational+Radial Limit Cycle](1_2.png)
 
 ## 🚀 How to Run
 
