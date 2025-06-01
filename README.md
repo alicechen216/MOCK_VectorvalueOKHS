@@ -20,6 +20,7 @@ This repository implements the **MOCK (Multivariate Occupation Kernel)** algorit
 ### 🌪️ 2. Lorenz System (2D Projection)
 - dx/dt = sigma * (y - x)  
 - dy/dt = x * (rho - z) - y
+![Lorenz System](1_4.png)
 
 ### 🔂 3. Van der Pol Oscillator
 - dx/dt = y  
